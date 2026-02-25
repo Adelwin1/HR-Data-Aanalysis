@@ -1,1 +1,20 @@
 
+import numpy as np
+import pandas as pd
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_colwidth', None)
+
+df = pd.read_csv("messy_HR_data.csv")
+df['Salary'] = pd.to_numeric(df['Salary'], errors='coerce')
+df['Age'] = pd.to_numeric(df['Age'], errors='coerce')
+df = df.dropna(subset=['Age', 'Salary', 'Name'])
+df['Age'].fillna(df['Age'].median(), inplace=True)
+df['Salary'].fillna(df['Salary'].median(), inplace=True)
+df['Joining Date']= pd.to_datetime(df['Joining Date'], errors='coerce')
+df = df.applymap(lambda x:x.strip() if isinstance(x, str) else x)
+print(df.info())
+print("Duplicates: ", df.duplicated().sum())
+print(df.head(50))
+df.to_csv("Cleaned_HR_data.csv", index=False)
+
